@@ -21,10 +21,11 @@ FLAGS= $(DEBUG) -std=$(ISO)
 LFLAGS=-I$(ODIR)
 
 #Linking object files
-_DEPS = vec3.h parameters.h particle.h nanoparticle.h
+_DEPS = vec3.h parameters.h particle.h nanoparticle.h potential.h metropolis.h \
+	    dipolar.h steric.h vanderwaals.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ1 = main.o vec3.o particle.o
+_OBJ1 = main.o vec3.o particle.o potential.o metropolis.o
 OBJ1 = $(patsubst %,$(ODIR)/%,$(_OBJ1))
 
 $(ODIR)/%.o: %.cpp $(DEPS)

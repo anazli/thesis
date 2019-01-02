@@ -45,3 +45,4 @@ double Potential::totalInteraction(const std::vector<Nanoparticle>& v) const
 
 	return energy;
 }
+

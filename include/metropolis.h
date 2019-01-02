@@ -42,4 +42,13 @@ private:
     unsigned int Naccpt;
 };
 
+
+double totalZeemann(const std::vector<Nanoparticle>& v, const Vec3& b);
+
+double total_potential(size_t index, const std::vector<Nanoparticle>& system,
+                       const std::vector<std::string>& interactions);
+
+double total_potential(const std::vector<Nanoparticle>& system,
+                       const std::vector<std::string>& interactions);
+
 #endif 

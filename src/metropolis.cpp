@@ -226,31 +226,8 @@ vector<Nanoparticle> Metropolis::mrt2(size_t index,
 	Vec3 b_field(0., 1., 0.);
 
 	int num_inter = interactions.size();
-	double Eold(0.);
-	double Enew(0.);
-	for(int i = 0 ; i < num_inter ; ++i)
-	{
-		if(interactions[i] == "dipolar")
-			Eold += dip.appliedTo(index, v);
-		else if(interactions[i] == "vanderwaals")
-			Eold += van.appliedTo(index, v);
-		else if(interactions[i] == "steric")
-			Eold += st.appliedTo(index, v);
-		else if(interactions[i] == "zeeman")
-			Eold += -dot(v[index].dipole_moment, b_field);
-	}
-	
-	for(int i = 0 ; i < num_inter ; ++i)
-	{
-		if(interactions[i] == "dipolar")
-			Enew += dip.appliedTo(index, temp);
-		else if(interactions[i] == "vanderwaals")
-			Enew += van.appliedTo(index, temp);
-		else if(interactions[i] == "steric")
-			Enew += st.appliedTo(index, v);
-		else if(interactions[i] == "zeeman")
-			Enew += -dot(temp[index].dipole_moment, b_field);
-	}
+	double Eold = total_potential(index, v, interactions);
+	double Enew = total_potential(index, temp, interactions);
 
 	double dE = Enew - Eold;
 
@@ -274,3 +251,63 @@ vector<Nanoparticle> Metropolis::mrt2(size_t index,
 
 }
 
+double totalZeemann(const vector<Nanoparticle>& v, const Vec3& b)
+{
+    double energy = 0.;
+    size_t vsize = v.size();
+    for( size_t i = 0 ; i < vsize ; ++i)
+        energy += -dot(v[i].dipole_moment * v[i].dipole_length(), b);
+
+    return energy;
+}
+
+double total_potential(size_t index, const std::vector<Nanoparticle>& v,
+                       const std::vector<std::string>& interactions)
+{
+	Dipolar dip(Mo/(4. * PI));
+	Vanderwaals van(-ALPHA/12.);
+	Steric st(PI * Kb * grafting * TEMP/2.);
+	Vec3 b_field(0., 1., 0.);
+
+	int num_inter = interactions.size();
+	double energy(0.);
+	for(int i = 0 ; i < num_inter ; ++i)
+	{
+		if(interactions[i] == "dipolar")
+			energy += dip.appliedTo(index, v);
+		else if(interactions[i] == "vanderwaals")
+			energy += van.appliedTo(index, v);
+		else if(interactions[i] == "steric")
+			energy += st.appliedTo(index, v);
+		else if(interactions[i] == "zeeman")
+			energy += -dot(v[index].dipole_moment * v[index].dipole_length(), b_field);
+	}
+
+	return energy;
+}
+
+
+double total_potential(const std::vector<Nanoparticle>& v,
+                       const std::vector<std::string>& interactions)
+{
+	Dipolar dip(Mo/(4. * PI));
+	Vanderwaals van(-ALPHA/12.);
+	Steric st(PI * Kb * grafting * TEMP/2.);
+	Vec3 b_field(0., 1., 0.);
+
+	int num_inter = interactions.size();
+	double energy(0.);
+	for(int i = 0 ; i < num_inter ; ++i)
+	{
+		if(interactions[i] == "dipolar")
+			energy += dip.totalInteraction(v);
+		else if(interactions[i] == "vanderwaals")
+			energy += van.totalInteraction(v);
+		else if(interactions[i] == "steric")
+			energy += st.totalInteraction(v);
+		else if(interactions[i] == "zeeman")
+			energy += totalZeemann(v, b_field);
+	}
+
+	return energy;
+}

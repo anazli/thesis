@@ -44,4 +44,5 @@ private:
     double m_parameter; /*!< brief The interaction's parameter (scale)*/
 };
 
+
 #endif 
