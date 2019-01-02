@@ -16,9 +16,11 @@ class Metropolis : public Random {
 public:
 
     Metropolis(const double& d1, const double& d2,
-               const unsigned int& nst, const unsigned int& nac,
-               int seed, int Nsize):
-        delta1{d1}, delta2{d2}, Nsteps{nst}, Naccpt{nac}, Random(seed, Nsize){}
+               const unsigned int& nst, int seed, int Nsize):
+        delta1{d1}, delta2{d2}, Nsteps{nst}, Random(seed, Nsize)
+        {
+            Naccpt = 0;
+        }
 
         unsigned int steps() const {return Nsteps;}
         unsigned int acceptedSteps() const {return Naccpt;}
@@ -43,12 +45,13 @@ private:
 };
 
 
-double totalZeemann(const std::vector<Nanoparticle>& v, const Vec3& b);
+double totalZeemann(const std::vector<Nanoparticle>&);
+double totalAnisotropy(const std::vector<Nanoparticle>&);
 
-double total_potential(size_t index, const std::vector<Nanoparticle>& system,
-                       const std::vector<std::string>& interactions);
+double total_potential(size_t, const std::vector<Nanoparticle>&,
+                       const std::vector<std::string>&);
 
-double total_potential(const std::vector<Nanoparticle>& system,
-                       const std::vector<std::string>& interactions);
+double total_potential(const std::vector<Nanoparticle>&,
+                       const std::vector<std::string>&);
 
 #endif 

@@ -2,11 +2,12 @@
 #define GUARD_PARAMETERS_H
 
 #include<cmath>
+#include "vec3.h"
 
 const unsigned int chunkSZ = 8; //omp for schedule static chunksize
 const double PI = acos(-1.);
 const size_t DIM = 3; //coords dim
-const double L = 10.E-7;//m //box length
+const double L = 1.E-7;//m //box length
 //energy cutoff distance
 const double RCW = 2.E-8;//for van der waals
 const double RCM = 6.E-8; //for magnetic dipolar
@@ -30,5 +31,6 @@ const double TEMP = 300.; //temperature
 const double BETA = 1./(Kb * TEMP);
 const double KANIS = 9000.;  // Anisotropy Constant
 const double MSAT = 446000.; // Saturation Magnetization
+const Vec3 field(0., 0., 0.1); //magnetic field vector 
 
 #endif

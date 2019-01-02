@@ -45,4 +45,7 @@ private:
                 of the metropolis class.*/
 };
 
+double zeeman(const Nanoparticle&);
+double anisotropy(const Nanoparticle&);
+
 #endif 

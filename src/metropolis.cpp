@@ -166,10 +166,10 @@ double Metropolis::particleVolumeFraction(vector<Nanoparticle>& v)
 
 	double sum = 0.;
 	double n = v.size();
-	for(size_t i = 0 ; i != n ; ++i)
+	for(size_t i = 0 ; i < n ; ++i)
 		sum += v[i].particleVolume();
 
-	return sum/pow(L,3);
+	return sum/(L*L*L);
 }
 
 double Metropolis::mrt2(double x)
@@ -223,7 +223,6 @@ vector<Nanoparticle> Metropolis::mrt2(size_t index,
 	Dipolar dip(Mo/(4. * PI));
 	Vanderwaals van(-ALPHA/12.);
 	Steric st(PI * Kb * grafting * TEMP/2.);
-	Vec3 b_field(0., 1., 0.);
 
 	int num_inter = interactions.size();
 	double Eold = total_potential(index, v, interactions);
@@ -251,14 +250,24 @@ vector<Nanoparticle> Metropolis::mrt2(size_t index,
 
 }
 
-double totalZeemann(const vector<Nanoparticle>& v, const Vec3& b)
+double totalZeemann(const vector<Nanoparticle>& v)
 {
     double energy = 0.;
-    size_t vsize = v.size();
-    for( size_t i = 0 ; i < vsize ; ++i)
-        energy += -dot(v[i].dipole_moment * v[i].dipole_length(), b);
+    size_t n = v.size();
+    for( size_t i = 0 ; i < n ; ++i)
+        energy += zeeman(v[i]);
 
     return energy;
+}
+
+double totalAnisotropy(const std::vector<Nanoparticle>& v)
+{
+	double energy = 0.;
+	size_t n = v.size();
+	for(size_t i = 0 ; i < n ; ++i)
+		energy += anisotropy(v[i]);
+	
+	return energy;
 }
 
 double total_potential(size_t index, const std::vector<Nanoparticle>& v,
@@ -267,7 +276,6 @@ double total_potential(size_t index, const std::vector<Nanoparticle>& v,
 	Dipolar dip(Mo/(4. * PI));
 	Vanderwaals van(-ALPHA/12.);
 	Steric st(PI * Kb * grafting * TEMP/2.);
-	Vec3 b_field(0., 1., 0.);
 
 	int num_inter = interactions.size();
 	double energy(0.);
@@ -280,7 +288,9 @@ double total_potential(size_t index, const std::vector<Nanoparticle>& v,
 		else if(interactions[i] == "steric")
 			energy += st.appliedTo(index, v);
 		else if(interactions[i] == "zeeman")
-			energy += -dot(v[index].dipole_moment * v[index].dipole_length(), b_field);
+			energy += zeeman(v[index]);
+		else if(interactions[i] == "anisotropy")
+			energy += anisotropy(v[index]);
 	}
 
 	return energy;
@@ -293,7 +303,6 @@ double total_potential(const std::vector<Nanoparticle>& v,
 	Dipolar dip(Mo/(4. * PI));
 	Vanderwaals van(-ALPHA/12.);
 	Steric st(PI * Kb * grafting * TEMP/2.);
-	Vec3 b_field(0., 1., 0.);
 
 	int num_inter = interactions.size();
 	double energy(0.);
@@ -306,7 +315,9 @@ double total_potential(const std::vector<Nanoparticle>& v,
 		else if(interactions[i] == "steric")
 			energy += st.totalInteraction(v);
 		else if(interactions[i] == "zeeman")
-			energy += totalZeemann(v, b_field);
+			energy += totalZeemann(v);
+		else if(interactions[i] == "anisotropy")
+			energy += totalAnisotropy(v);
 	}
 
 	return energy;
