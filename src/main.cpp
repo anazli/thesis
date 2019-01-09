@@ -14,7 +14,7 @@
 
 using namespace std;
 
-const size_t Nparticles = 100;
+const size_t Nparticles = 50;
 
 double totalZeemann(const vector<Nanoparticle>&, const Vec3&);
 Vec3 systemMagnetization(const vector<Nanoparticle>&);
@@ -24,7 +24,7 @@ int main()
 {
     vector<Nanoparticle> v;
 
-    Metropolis init_sim(1.5, 0.2, 1000, 1984, Nparticles-1);
+    Metropolis init_sim(1.5, 0.2, 1000, 353825, Nparticles-1);
 
     // Setting diameters
     double diam = LEFT;
@@ -55,8 +55,8 @@ int main()
     double norm = init_sim.particleVolumeFraction(v) * MSAT;
     Vec3 magnetization = systemMagnetization(v);
     cout << "Initial magnetization of the system:" << magnetization/norm << endl;
-    vector<string> interactions{"zeeman"};//{"dipolar", "anisotropy", "zeeman"};
-    Metropolis main_sim(1.* NM, 0.2, 500000, 999, Nparticles-1);
+    vector<string> interactions{"zeeman","anisotropy"};//{"dipolar", "anisotropy", "zeeman"};
+    Metropolis main_sim(1.* NM, 0.2, 1000000, 1359423, Nparticles-1);
     double energy = total_potential(v, interactions); 
     energy_stream << energy << endl;
     magnet_stream << magnetization.z()/norm << endl;
@@ -77,6 +77,8 @@ int main()
     }
 
     cout << "Final magnetization of the system:" << magnetization/norm << endl;
+    cout << "Total steps:" << main_sim.steps() << endl;
+    cout << "Accepted steps:" << main_sim.acceptedSteps() << endl;
 
     for ( size_t i = 0 ; i < Nparticles ; ++i )
     {

@@ -204,13 +204,13 @@ vector<Nanoparticle> Metropolis::mrt2(size_t index,
 {
 
 	vector<Nanoparticle> temp = v;
-	Vec3 displacement = (2. * randomVector() - 1.) * delta1;
-    Vec3 trial = temp[index].center + displacement;
+	//Vec3 displacement = delta1 * (randomVector() - 0.5);
+  //  Vec3 trial = v[index].center + displacement;
 
-	Vec3 mtrial = temp[index].dipole_moment + delta2 * randomVectorOnUnitSphere();
+	Vec3 mtrial = v[index].dipole_moment + delta2 * (randomVector() - 0.5);
     mtrial.normalize();
 
-	temp[index].center = trial;
+	//temp[index].center = trial;
 	temp[index].dipole_moment = mtrial;
 
 
@@ -219,15 +219,8 @@ vector<Nanoparticle> Metropolis::mrt2(size_t index,
 		return v;
 	}
 
-
-	Dipolar dip(Mo/(4. * PI));
-	Vanderwaals van(-ALPHA/12.);
-	Steric st(PI * Kb * grafting * TEMP/2.);
-
-	int num_inter = interactions.size();
 	double Eold = total_potential(index, v, interactions);
 	double Enew = total_potential(index, temp, interactions);
-
 	double dE = Enew - Eold;
 
 	if (dE <= 0.) {
@@ -260,7 +253,7 @@ double totalZeemann(const vector<Nanoparticle>& v)
     return energy;
 }
 
-double totalAnisotropy(const std::vector<Nanoparticle>& v)
+double totalAnisotropy(const vector<Nanoparticle>& v)
 {
 	double energy = 0.;
 	size_t n = v.size();
@@ -270,8 +263,8 @@ double totalAnisotropy(const std::vector<Nanoparticle>& v)
 	return energy;
 }
 
-double total_potential(size_t index, const std::vector<Nanoparticle>& v,
-                       const std::vector<std::string>& interactions)
+double total_potential(size_t index, const vector<Nanoparticle>& v,
+                       const vector<string>& interactions)
 {
 	Dipolar dip(Mo/(4. * PI));
 	Vanderwaals van(-ALPHA/12.);
@@ -297,8 +290,8 @@ double total_potential(size_t index, const std::vector<Nanoparticle>& v,
 }
 
 
-double total_potential(const std::vector<Nanoparticle>& v,
-                       const std::vector<std::string>& interactions)
+double total_potential(const vector<Nanoparticle>& v,
+                       const vector<string>& interactions)
 {
 	Dipolar dip(Mo/(4. * PI));
 	Vanderwaals van(-ALPHA/12.);

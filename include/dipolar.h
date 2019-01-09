@@ -24,8 +24,8 @@ public:
 
         double prod1 = dot(selected.dipole_moment * selected.dipole_length(),
                            other.dipole_moment * other.dipole_length());
-        double prod2 = dot(selected.dipole_moment, v);
-        double prod3 = dot(other.dipole_moment, v);
+        double prod2 = dot(selected.dipole_moment * selected.dipole_length(), v);
+        double prod3 = dot(other.dipole_moment * other.dipole_length(), v);
 
         double e1 = prod1/r3;
         double e2 = (prod2 * prod3)/r5;

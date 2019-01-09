@@ -53,7 +53,7 @@ Vec3& Vec3::operator*=(const double& num)
 Vec3& Vec3::normalize()
 {
     double norm = this->magnitude();
-    *this = (*this)/(norm + 1.E-30);
+    *this = (*this)/(norm + 1.E-25);
     return *this;
 }
 
@@ -133,7 +133,7 @@ Vec3 operator/(const Vec3& v1, const Vec3& v2)
 
 Vec3 operator/(const Vec3& v, const double& num)
 {
-    double e = 1.E-30;
+    double e = 1.E-25;
     return Vec3(v.x()/(num+e), v.y()/(num+e), v.z()/(num+e));
 }
 
@@ -177,7 +177,7 @@ double Vec3::magnitude()const
 
 Vec3 getUnitVectorOf(const Vec3& v)
 {
-    return v/(v.magnitude()+1.E-30);
+    return v/(v.magnitude()+1.E-25);
 }
 
 Vec3 randomVector(const double& a, const double& b)
